@@ -266,3 +266,19 @@ class TestPatchCategory:
         assert updated_category.name == payload["name"]
         assert updated_category.description == category_movie.description
         assert updated_category.is_active == payload["is_active"]
+
+    def test_return_404_when_category_does_not_exist(
+        self,
+        category_movie: Category,
+        category_repository: DjangoORMCategoryRepository,
+    ) -> None:
+        category_repository.save(category_movie)
+
+        url = f"/api/categories/{uuid4()}/"
+        payload = {
+            "name": "Updated Movie",
+        }
+        response = APIClient().patch(url, data=payload)
+
+        assert response.status_code == status.HTTP_404_NOT_FOUND
+

@@ -39,3 +39,11 @@ class TestListGenre:
                 )
             ]
         )
+
+    def test_list_genre_when_do_not_exist_genre(self):
+        genre_repository = InMemoryGenreRepository()
+        use_case = ListGenre(genre_repository)
+        output = use_case.execute(input=ListGenre.Input)
+
+        assert len(output.data) == 0
+        assert output == ListGenre.Output(data=[])

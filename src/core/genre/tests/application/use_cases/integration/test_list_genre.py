@@ -5,7 +5,7 @@ from src.core.category.infra.in_memory_category_repository import (
 from src.core.genre.application.use_cases.list_genre import GenreOutput, ListGenre
 from src.core.genre.domain.genre import Genre
 from src.core.genre.infra.in_memory_genre_repository import InMemoryGenreRepository
-from src.django_project import repository
+from src.django_project.category_app import repository
 
 
 class TestListGenre:

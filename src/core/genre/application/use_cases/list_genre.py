@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from uuid import UUID
 from src.core.genre.domain.genre import Genre
 from src.core.genre.domain.genre_repository import GenreRepository
-from src.django_project import repository
+from src.django_project.category_app import repository
 
 
 @dataclass

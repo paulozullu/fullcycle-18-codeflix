@@ -1,5 +1,4 @@
 import uuid
-from django import db
 from django.db import models
 
 

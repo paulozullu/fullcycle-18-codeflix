@@ -3,6 +3,7 @@ from typing import Optional
 
 from src.core.genre.domain.genre_repository import GenreRepository
 from src.django_project.genre_app.models import Genre as GenreModel
+from src.django_project.category_app.models import Category as CategoryModel
 from django.db import transaction
 
 
@@ -17,9 +18,14 @@ class DjangoORMGenreRepository(GenreRepository):
                 name=genre.name,
                 is_active=genre.is_active,
             )
-
+            genre_model.save()
             if genre.categories:
-                genre_model.categories.set(genre.categories)
+                # Buscar instâncias de Category a partir dos IDs
+                categories = CategoryModel.objects.filter(id__in=genre.categories)
+                genre_model.categories.set(categories)
+                genre_model.save()
+            for category in genre_model.categories.all():
+                print(category)
 
     def get_by_id(self, id: str) -> Optional[Genre]:
         try:
@@ -37,6 +43,8 @@ class DjangoORMGenreRepository(GenreRepository):
         self.model.objects.delete(id=id)
 
     def find_all(self) -> list[Genre]:
+        for genre_model in self.model.objects.all():
+            genre_model
         return [
             Genre(
                 id=genre_model.id,

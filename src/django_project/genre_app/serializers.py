@@ -39,7 +39,7 @@ class CreateGenreInputSerializer(serializers.Serializer):
 
     name = serializers.CharField(max_length=255, allow_blank=False)
     is_active = serializers.BooleanField(default=True)
-    category_ids = SetField(
+    categories = SetField(
         child=serializers.UUIDField(),
         help_text="List of category IDs associated with the genre.",
     )

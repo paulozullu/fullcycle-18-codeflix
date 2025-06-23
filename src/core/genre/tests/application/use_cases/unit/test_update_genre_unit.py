@@ -37,7 +37,7 @@ class TestUpdateGenreUnit:
         mock_genre_repository.get_by_id.return_value = genre
         use_case = UpdateGenre(mock_genre_repository, mock_category_repository)
         input = UpdateGenre.Input(
-            id=genre.id, name="", category_ids={category.id}, is_active=genre.is_active
+            id=genre.id, name="", categories={category.id}, is_active=genre.is_active
         )
         with pytest.raises(InvalidGenre, match="name should not be empty"):
             use_case.execute(input=input)
@@ -51,7 +51,7 @@ class TestUpdateGenreUnit:
         mock_genre_repository.get_by_id.return_value = genre
         use_case = UpdateGenre(mock_genre_repository, mock_category_repository)
         input = UpdateGenre.Input(
-            id=genre.id, name="Action", category_ids={category.id, new_category.id}, is_active=False
+            id=genre.id, name="Action", categories={category.id, new_category.id}, is_active=False
         )
 
         with pytest.raises(RelatedCategoriesNotFound):
@@ -69,7 +69,7 @@ class TestUpdateGenreUnit:
         mock_genre_repository.get_by_id.return_value = genre
         use_case = UpdateGenre(mock_genre_repository, mock_category_repository)
         input = UpdateGenre.Input(
-            id=genre.id, name="Action", category_ids={category.id, new_category.id}, is_active=False
+            id=genre.id, name="Action", categories={category.id, new_category.id}, is_active=False
         )
 
         use_case.execute(input=input)
@@ -79,4 +79,4 @@ class TestUpdateGenreUnit:
         assert updated_genre.name == input.name
         assert updated_genre.is_active == input.is_active
         assert len(updated_genre.categories) == 2
-        assert updated_genre.categories == input.category_ids
+        assert updated_genre.categories == input.categories

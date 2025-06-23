@@ -96,7 +96,7 @@ class TestCreateAPI:
         url = "/api/genres/"
         data = {
             "name": "Action",
-            "category_ids": [str(category_movie.id), str(category_documentary.id)],
+            "categories": [str(category_movie.id), str(category_documentary.id)],
             "is_active": True,
         }
         response = APIClient().post(url, data, format="json")

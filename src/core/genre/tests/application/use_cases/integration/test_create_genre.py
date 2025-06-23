@@ -46,7 +46,7 @@ class TestCreateGenre:
             repository=genre_repository, category_repository=category_repository
         )
         input = CreateGenre.Input(
-            name="Action", category_ids={movie_category.id, documentary_category.id}
+            name="Action", categories={movie_category.id, documentary_category.id}
         )
 
         output = use_case.execute(input)
@@ -64,7 +64,7 @@ class TestCreateGenre:
             repository=genre_repository, category_repository=category_repository
         )
         with pytest.raises(RelatedCategoriesNotFound) as exc_info:
-            input = CreateGenre.Input(name="Action", category_ids={uuid.uuid4()})
+            input = CreateGenre.Input(name="Action", categories={uuid.uuid4()})
             use_case.execute(input)
 
     def test_create_genre_without_categories(self):

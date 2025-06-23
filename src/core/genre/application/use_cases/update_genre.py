@@ -23,7 +23,7 @@ class UpdateGenre:
     class Input:
         id: UUID
         name: str
-        category_ids: set[UUID] = field(default_factory=set)
+        categories: set[UUID] = field(default_factory=set)
         is_active: bool = True
 
     @dataclass
@@ -36,9 +36,9 @@ class UpdateGenre:
             raise GenreNotFound(f"Genre with {input.id} not found.")
 
         category_ids = {category.id for category in self.category_repository.find_all()}
-        if not input.category_ids.issubset(category_ids):
+        if not input.categories.issubset(category_ids):
             raise RelatedCategoriesNotFound(
-                f"Categories {input.category_ids - category_ids} not found"
+                f"Categories {input.categories - category_ids} not found"
             )
         
         try:
@@ -52,16 +52,16 @@ class UpdateGenre:
             genre.deactivate()
 
         category_ids = {category.id for category in self.category_repository.find_all()}
-        if not input.category_ids.issubset(category_ids):
+        if not input.categories.issubset(category_ids):
             raise RelatedCategoriesNotFound(
-                f"Categories {input.category_ids - category_ids} not found"
+                f"Categories {input.categories - category_ids} not found"
             )
 
         for category_id in set(genre.categories):
-            if not category_id in input.category_ids:
+            if not category_id in input.categories:
                 genre.remove_category(category_id)
 
-        for category_id in set(input.category_ids):
+        for category_id in set(input.categories):
             if not category_id in genre.categories:
                 genre.add_category(category_id)
 

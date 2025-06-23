@@ -40,7 +40,7 @@ class TestUpdateGenre:
         request = UpdateGenre.Input(
             id=genre.id,
             name="Action",
-            category_ids={category.id},
+            categories={category.id},
         )
         use_case.execute(request)
 
@@ -64,7 +64,7 @@ class TestUpdateGenre:
         request = UpdateGenre.Input(
             id=genre.id,
             name="Terror",
-            category_ids={category.id},
+            categories={category.id},
             is_active=True,
         )
         use_case.execute(request)
@@ -102,7 +102,7 @@ class TestUpdateGenre:
         request = UpdateGenre.Input(
             id=genre.id,
             name="Terror",
-            category_ids={category.id},
+            categories={category.id},
             is_active=False,
         )
         use_case.execute(request)
@@ -143,7 +143,7 @@ class TestUpdateGenre:
         request = UpdateGenre.Input(
             id=genre.id,
             name=genre.name,
-            category_ids={category.id, new_category.id},
+            categories={category.id, new_category.id},
             is_active=genre.is_active
         )
         use_case.execute(request)
@@ -172,7 +172,7 @@ class TestUpdateGenre:
         request = UpdateGenre.Input(
             id=genre.id,
             name=genre.name,
-            category_ids={category.id},
+            categories={category.id},
             is_active=genre.is_active,
         )
         use_case.execute(request)
@@ -201,7 +201,7 @@ class TestUpdateGenre:
         request = UpdateGenre.Input(
             id=genre.id,
             name="Action",
-            category_ids={category.id, new_category.id},
+            categories={category.id, new_category.id},
             is_active=False,
         )
         use_case.execute(request)

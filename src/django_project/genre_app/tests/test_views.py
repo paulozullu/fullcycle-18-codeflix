@@ -1,7 +1,12 @@
 from http import HTTPStatus
+import uuid
 import pytest
 
 from src.core.category.domain.category import Category
+from src.core.genre.application.exceptions import (
+    GenreNotFound,
+    RelatedCategoriesNotFound,
+)
 from src.core.genre.domain.genre import Genre
 from src.django_project.category_app.repository import DjangoORMCategoryRepository
 from src.django_project.genre_app.repository import DjangoORMGenreRepository
@@ -110,3 +115,115 @@ class TestCreateAPI:
             category_movie.id,
             category_documentary.id,
         }
+
+
+@pytest.mark.django_db
+class TestDeleteAPI:
+    def test_delete_genre(
+        self,
+        genre_repository: DjangoORMGenreRepository,
+        genre_romance: Genre,
+    ):
+        genre_repository.save(genre_romance)
+        url = f"/api/genres/{genre_romance.id}/"
+        response = APIClient().delete(url)
+
+        assert response.status_code == HTTPStatus.NO_CONTENT
+        assert not genre_repository.get_by_id(genre_romance.id)
+
+    def test_delete_non_existent_genre(self):
+        genre_id = uuid.uuid4()
+        url = f"/api/genres/{genre_id}/"
+        response = APIClient().delete(url)
+
+        assert response.status_code == HTTPStatus.NOT_FOUND
+
+    def test_delete_genre_with_invalid_id(self):
+        url = "/api/genres/invalid-id/"
+        response = APIClient().delete(url)
+
+        assert response.status_code == HTTPStatus.BAD_REQUEST
+
+
+@pytest.mark.django_db
+class TestUpdateAPI:
+    def test_when_request_data_is_valid_then_update_genre(
+        self,
+        genre_drama,
+        genre_repository: DjangoORMGenreRepository,
+        category_documentary,
+        category_movie,
+        category_repository: DjangoORMCategoryRepository,
+    ):
+        category_repository.save(category_movie)
+        category_repository.save(category_documentary)
+        genre_repository.save(genre_drama)
+        data = {
+            "name": "Drama 2025",
+            "categories": genre_drama.categories,
+            "is_active": True,
+        }
+
+        url = f"/api/genres/{genre_drama.id}/"
+        response = APIClient().put(url, data, format="json")
+
+        assert response.status_code == HTTPStatus.NO_CONTENT
+
+    def test_when_request_data_is_invalid_then_return_400(
+        self,
+        genre_drama: Genre,
+        genre_repository: DjangoORMGenreRepository,
+        category_documentary: Category,
+        category_movie: Category,
+        category_repository: DjangoORMCategoryRepository,
+    ):
+        for category in [category_documentary, category_movie]:
+            category_repository.save(category=category)
+
+        genre_repository.save(genre_drama)
+        data = {
+            "name": [],
+            "categories": genre_drama.categories,
+            "is_active": "ss",
+        }
+        url = f"/api/genres/{genre_drama.id}/"
+        response = APIClient().put(url, data, format="json")
+
+        assert response.status_code == HTTPStatus.BAD_REQUEST
+
+    def test_when_related_categories_do_not_exist_then_return_400(
+        self,
+        genre_drama: Genre,
+        genre_repository: DjangoORMGenreRepository,
+    ):
+        genre_repository.save(genre_drama)
+        data = {
+            "name": genre_drama.name,
+            "categories": {uuid.uuid4()},
+            "is_active": genre_drama.is_active,
+        }
+        url = f"/api/genres/{genre_drama.id}/"
+        response = APIClient().put(url, data, format="json")
+
+        assert response.status_code == HTTPStatus.BAD_REQUEST
+
+    def test_when_genre_does_not_exist_then_return_404(
+        self,
+        category_repository: DjangoORMCategoryRepository,
+        category_documentary: Category,
+        category_movie: Category,
+    ):
+        genre_id = uuid.uuid4()
+        for category in [category_documentary, category_movie]:
+            category_repository.save(category=category)
+
+        data = {
+            "name": "Drama 2025",
+            "categories": {category_documentary.id, category_movie.id},
+            "is_active": False,
+        }
+        url = f"/api/genres/{genre_id}/"
+
+        response = APIClient().put(url, data, format="json")
+
+        assert response.status_code == HTTPStatus.NOT_FOUND

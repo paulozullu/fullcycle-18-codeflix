@@ -24,8 +24,6 @@ class DjangoORMGenreRepository(GenreRepository):
                 categories = CategoryModel.objects.filter(id__in=genre.categories)
                 genre_model.categories.set(categories)
                 genre_model.save()
-            for category in genre_model.categories.all():
-                print(category)
 
     def get_by_id(self, id: str) -> Optional[Genre]:
         try:
@@ -40,7 +38,7 @@ class DjangoORMGenreRepository(GenreRepository):
             return None
 
     def delete(self, id: str):
-        self.model.objects.delete(id=id)
+        self.model.objects.filter(id=id).delete()
 
     def find_all(self) -> list[Genre]:
         for genre_model in self.model.objects.all():

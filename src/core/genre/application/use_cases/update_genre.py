@@ -40,7 +40,7 @@ class UpdateGenre:
             raise RelatedCategoriesNotFound(
                 f"Categories {input.categories - category_ids} not found"
             )
-        
+
         try:
             genre.change_name(name=input.name)
         except ValueError as error:

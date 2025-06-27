@@ -52,6 +52,28 @@ class CreateGenreOutputSerializer(serializers.Serializer):
 
     id = serializers.UUIDField()
 
+class DeleteGenreInputSerializer(serializers.Serializer):
+    """
+    Serializer for Delete Genre request.
+    """
+
+    id = serializers.UUIDField()
+
+class UpdateGenreInputSerializer(serializers.Serializer):
+    """
+    Serializer for the Update Genre input.
+    """
+
+    id = serializers.UUIDField()
+    name = serializers.CharField(max_length=255, allow_blank=False)
+    is_active = serializers.BooleanField()
+    categories = SetField(
+        child=serializers.UUIDField(),
+        help_text="List of category IDs associated with the genre.",
+    )
+
+
+
 
 # class RetrieveGenreResponseSerializer(serializers.Serializer):
 #     """
@@ -69,20 +91,7 @@ class CreateGenreOutputSerializer(serializers.Serializer):
 #     id = serializers.UUIDField()
 
 
-# class UpdateGenreRequestSerializer(serializers.Serializer):
-#     """
-#     Serializer for the Update Genre request.
-#     """
-
-#     id = serializers.UUIDField()
-#     name = serializers.CharField(max_length=255, allow_blank=False)
-#     description = serializers.CharField()
-#     is_active = serializers.BooleanField()
 
 
-# class DeleteGenreRequestSerializer(serializers.Serializer):
-#     """
-#     Serializer for the Retrieve Genre request.
-#     """
 
-#     id = serializers.UUIDField()
+

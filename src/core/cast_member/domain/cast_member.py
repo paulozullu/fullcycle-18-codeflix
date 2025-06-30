@@ -11,9 +11,9 @@ class Type(StrEnum):
 
 @dataclass
 class CastMember:
-    id: UUID = field(default_factory=uuid.uuid4)
     name: str
     type: Type
+    id: UUID = field(default_factory=uuid.uuid4)
 
     def __post_init__(self):
         self.validate()

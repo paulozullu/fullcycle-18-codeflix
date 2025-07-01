@@ -1,5 +1,4 @@
 from unittest.mock import create_autospec
-import uuid
 import pytest
 
 from src.core.cast_member.application.use_cases.list_cast_member import (

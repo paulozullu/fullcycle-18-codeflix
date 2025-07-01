@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from operator import is_
 from uuid import UUID
 
 from traitlets import Type

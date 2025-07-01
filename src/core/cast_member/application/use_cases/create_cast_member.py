@@ -4,7 +4,7 @@ from uuid import UUID
 
 from traitlets import Type
 
-from src.core.cast_member.application.exceptions import InvalidCastMember
+from src.core.cast_member.application.use_cases.exceptions import InvalidCastMember
 from src.core.cast_member.domain.cast_member import CastMember
 from src.core.cast_member.domain.cast_member_repository import CastMemberRepository
 

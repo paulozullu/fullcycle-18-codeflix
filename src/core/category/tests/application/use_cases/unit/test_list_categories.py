@@ -1,5 +1,3 @@
-from unicodedata import category
-from unittest import mock
 from unittest.mock import create_autospec
 
 from src.core.category.domain.category_repository import CategoryRepository

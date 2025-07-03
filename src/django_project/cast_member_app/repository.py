@@ -1,6 +1,6 @@
 from typing import Optional
 
-from src.core.cast_member.domain.cast_member import CastMember
+from src.core.cast_member.domain.cast_member import CastMember, Type
 from src.core.cast_member.domain.cast_member_repository import CastMemberRepository
 from src.django_project.cast_member_app.models import CastMember as CastMemberModel
 
@@ -23,7 +23,7 @@ class DjangoORMCastMemberRepository(CastMemberRepository):
             return CastMember(
                 name=cast_member_model.name,
                 id=cast_member_model.id,
-                type=cast_member_model.type,
+                type=Type(cast_member_model.type),
             )
         except self.model.DoesNotExist:
             return None
@@ -36,7 +36,7 @@ class DjangoORMCastMemberRepository(CastMemberRepository):
             CastMember(
                 id=cast_member_model.id,
                 name=cast_member_model.name,
-                type=cast_member_model.type,
+                type=Type(cast_member_model.type),
             )
             for cast_member_model in self.model.objects.all()
         ]

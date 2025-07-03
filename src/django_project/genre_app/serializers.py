@@ -34,7 +34,7 @@ class SetField(serializers.ListField):
 
 class CreateGenreInputSerializer(serializers.Serializer):
     """
-    Serializer for the Create Genre request.
+    Serializer for the Create Genre input.
     """
 
     name = serializers.CharField(max_length=255, allow_blank=False)
@@ -52,12 +52,14 @@ class CreateGenreOutputSerializer(serializers.Serializer):
 
     id = serializers.UUIDField()
 
+
 class DeleteGenreInputSerializer(serializers.Serializer):
     """
-    Serializer for Delete Genre request.
+    Serializer for Delete Genre input.
     """
 
     id = serializers.UUIDField()
+
 
 class UpdateGenreInputSerializer(serializers.Serializer):
     """
@@ -73,25 +75,17 @@ class UpdateGenreInputSerializer(serializers.Serializer):
     )
 
 
+class RetrieveGenreOutputSerializer(serializers.Serializer):
+    """
+    Serializer for the Retrieve Genre output.
+    """
+
+    data = GenreOutputSerializer(source="*")
 
 
-# class RetrieveGenreResponseSerializer(serializers.Serializer):
-#     """
-#     Serializer for the Retrieve Genre response.
-#     """
+class RetrieveGenreInputSerializer(serializers.Serializer):
+    """
+    Serializer for the Retrieve Genre input.
+    """
 
-#     data = GenreResponseSerializer(source="*")
-
-
-# class RetrieveGenreSerializer(serializers.Serializer):
-#     """
-#     Serializer for the Retrieve Genre request.
-#     """
-
-#     id = serializers.UUIDField()
-
-
-
-
-
-
+    id = serializers.UUIDField()

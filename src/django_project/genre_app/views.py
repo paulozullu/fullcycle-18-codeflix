@@ -16,6 +16,7 @@ from src.core.genre.application.exceptions import (
 )
 from src.core.genre.application.use_cases.create_genre import CreateGenre
 from src.core.genre.application.use_cases.delete_genre import DeleteGenre
+from src.core.genre.application.use_cases.get_genre import GetGenre
 from src.core.genre.application.use_cases.list_genre import ListGenre
 from src.core.genre.application.use_cases.update_genre import UpdateGenre
 from src.django_project.category_app.repository import DjangoORMCategoryRepository
@@ -25,6 +26,7 @@ from src.django_project.genre_app.serializers import (
     CreateGenreOutputSerializer,
     DeleteGenreInputSerializer,
     ListGenreOutputSerializer,
+    RetrieveGenreInputSerializer,
     UpdateGenreInputSerializer,
 )
 
@@ -104,39 +106,19 @@ class GenreViewSet(viewsets.ViewSet):
 
         return Response(status=HTTPStatus.NO_CONTENT)
 
-    # def retrieve(self, request: Request, pk: UUID) -> Response:
-    #     serializer = RetrieveCategoryRequestSerializer(data={"id": pk})
-    #     serializer.is_valid(raise_exception=True)
+    def retrieve(self, request: Request, pk: UUID) -> Response:
+        serializer = RetrieveGenreInputSerializer(data={"id": pk})
+        serializer.is_valid(raise_exception=True)
 
-    #     request = GetCategoryRequest(id=serializer.validated_data["id"])
-    #     use_case = GetCategory(repository=DjangoORMCategoryRepository())
+        input = GetGenre.Input(id=serializer.validated_data["id"])
+        use_case = GetGenre(repository=DjangoORMGenreRepository())
 
-    #     try:
-    #         result = use_case.execute(request=request)
-    #     except CategoryNotFound:
-    #         return Response(status=HTTP_404_NOT_FOUND)
+        try:
+            genre_output = use_case.execute(input=input)
+        except GenreNotFound:
+            return Response(status=HTTPStatus.NOT_FOUND)
 
-    #     category_output = RetrieveCategoryResponseSerializer(instance=result)
-    #     return Response(
-    #         status=HTTP_200_OK,
-    #         data=category_output.data,
-    #     )
-
-    # def partial_update(self, request: Request, pk=None) -> Response:
-    #     """
-    #     Partially update an existing category.
-    #     """
-    #     serializer = UpdateCategoryRequestSerializer(data={**request.data, "id": pk}, partial=True)
-    #     serializer.is_valid(raise_exception=True)
-
-    #     input = UpdateCategoryRequest(**serializer.validated_data)
-    #     use_case = UpdateCategory(repository=DjangoORMCategoryRepository())
-
-    #     try:
-    #         use_case.execute(request=input)
-    #     except CategoryNotFound:
-    #         return Response(status=HTTP_404_NOT_FOUND)
-
-    #     return Response(
-    #         status=HTTP_204_NO_CONTENT,
-    #     )
+        return Response(
+            status=HTTPStatus.OK,
+            data=genre_output.__dict__,
+        )

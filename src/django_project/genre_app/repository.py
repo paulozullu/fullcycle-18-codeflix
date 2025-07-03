@@ -24,6 +24,7 @@ class DjangoORMGenreRepository(GenreRepository):
                 categories = CategoryModel.objects.filter(id__in=genre.categories)
                 genre_model.categories.set(categories)
                 genre_model.save()
+            return genre
 
     def get_by_id(self, id: str) -> Optional[Genre]:
         try:

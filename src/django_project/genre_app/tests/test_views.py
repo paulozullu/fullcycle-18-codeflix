@@ -227,3 +227,30 @@ class TestUpdateAPI:
         response = APIClient().put(url, data, format="json")
 
         assert response.status_code == HTTPStatus.NOT_FOUND
+
+
+@pytest.mark.django_db
+class TestRetrieveAPI:
+    def test_retrieve_genre_and_categories(
+        self,
+        genre_repository,
+        genre_romance,
+        genre_drama,
+        category_repository,
+        category_documentary,
+        category_movie,
+    ):
+        romance = genre_repository.save(genre_romance)
+        genre_repository.save(genre_drama)
+        url = f"/api/genres/{romance.id}/"
+        response = APIClient().get(url)
+
+        assert response.status_code == HTTPStatus.OK
+        assert response.data
+
+        assert response.data["id"] == romance.id
+        assert response.data["name"] == romance.name
+        assert response.data["is_active"] == romance.is_active
+
+        assert response.data["categories"]
+        assert category_documentary.id in response.data["categories"]

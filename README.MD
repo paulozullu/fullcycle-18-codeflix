@@ -13,7 +13,7 @@ Este é um projeto de administração de catálogos desenvolvido com Python e Dj
 - Clone o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/codeflix-catalog-admin-zoio.git
+git clone git@github.com:paulozullu/fullcycle-18-codeflix.git
 cd codeflix-catalog-admin-zoio
 ```
 

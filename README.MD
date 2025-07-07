@@ -73,9 +73,6 @@ pytest
 Para executar testes específicos:
 
 ```bash
-# Testes de unidade
+# Testes
 pytest src/
-
-# Testes end-to-end
-pytest tests_e2e/
 ```

@@ -5,8 +5,8 @@ from uuid import UUID
 
 
 class Type(StrEnum):
-    ACTOR = "actor"
-    DIRECTOR = "director"
+    ACTOR = "ACTOR"
+    DIRECTOR = "DIRECTOR"
 
 
 @dataclass

@@ -3,10 +3,7 @@ import uuid
 import pytest
 
 from src.core.category.domain.category import Category
-from src.core.genre.application.exceptions import (
-    GenreNotFound,
-    RelatedCategoriesNotFound,
-)
+
 from src.core.genre.domain.genre import Genre
 from src.django_project.category_app.repository import DjangoORMCategoryRepository
 from src.django_project.genre_app.repository import DjangoORMGenreRepository
@@ -64,7 +61,6 @@ class TestListAPI:
         genre_repository,
         genre_romance,
         genre_drama,
-        category_repository,
         category_documentary,
         category_movie,
     ):
@@ -94,7 +90,6 @@ class TestCreateAPI:
     def test_create_genre_with_categories(
         self,
         genre_repository: DjangoORMGenreRepository,
-        category_repository,
         category_movie,
         category_documentary,
     ):
@@ -151,12 +146,7 @@ class TestUpdateAPI:
         self,
         genre_drama,
         genre_repository: DjangoORMGenreRepository,
-        category_documentary,
-        category_movie,
-        category_repository: DjangoORMCategoryRepository,
     ):
-        category_repository.save(category_movie)
-        category_repository.save(category_documentary)
         genre_repository.save(genre_drama)
         data = {
             "name": "Drama 2025",
@@ -173,13 +163,7 @@ class TestUpdateAPI:
         self,
         genre_drama: Genre,
         genre_repository: DjangoORMGenreRepository,
-        category_documentary: Category,
-        category_movie: Category,
-        category_repository: DjangoORMCategoryRepository,
     ):
-        for category in [category_documentary, category_movie]:
-            category_repository.save(category=category)
-
         genre_repository.save(genre_drama)
         data = {
             "name": [],
@@ -208,14 +192,9 @@ class TestUpdateAPI:
         assert response.status_code == HTTPStatus.BAD_REQUEST
 
     def test_when_genre_does_not_exist_then_return_404(
-        self,
-        category_repository: DjangoORMCategoryRepository,
-        category_documentary: Category,
-        category_movie: Category,
+        self, category_documentary, category_movie
     ):
         genre_id = uuid.uuid4()
-        for category in [category_documentary, category_movie]:
-            category_repository.save(category=category)
 
         data = {
             "name": "Drama 2025",

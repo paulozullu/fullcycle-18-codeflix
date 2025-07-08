@@ -10,37 +10,18 @@ class DjangoORMCategoryRepository(CategoryRepository):
 
     def get_by_id(self, id: UUID) -> Category | None:
         try:
-            category = self.model.objects.get(id=id)
-            return Category(
-                id=category.id,
-                name=category.name,
-                description=category.description,
-                is_active=category.is_active,
-            )
+            category_model = self.model.objects.get(id=id)
+            return CategoryModelMapper.to_entity(category_model)
         except self.model.DoesNotExist:
             return None
 
     def find_all(self) -> list[Category]:
-        categories = self.model.objects.all()
-        return [
-            Category(
-                id=category.id,
-                name=category.name,
-                description=category.description,
-                is_active=category.is_active,
-            )
-            for category in categories
-        ]
+        category_models = self.model.objects.all()
+        return [CategoryModelMapper.to_entity(category) for category in category_models]
 
-    def save(self, category: Category) -> Category:
-        category_model = self.model.objects.create(
-            name=category.name,
-            description=category.description,
-            is_active=category.is_active,
-        )
-
-        category.id = category_model.id
-        return category
+    def save(self, category: Category) -> None:
+        category_model = CategoryModelMapper.to_model(category)
+        category_model.save()
 
     def delete(self, id: UUID) -> None:
         self.model.objects.filter(id=id).delete()
@@ -50,4 +31,23 @@ class DjangoORMCategoryRepository(CategoryRepository):
             name=category.name,
             description=category.description,
             is_active=category.is_active,
+        )
+
+
+class CategoryModelMapper:
+    @staticmethod
+    def to_model(category: Category) -> CategoryModel:
+        return CategoryModel(
+            id=category.id,
+            name=category.name,
+            description=category.description,
+            is_active=category.is_active,
+        )
+
+    def to_entity(category_model: CategoryModel) -> Category:
+        return Category(
+            id=category_model.id,
+            name=category_model.name,
+            description=category_model.description,
+            is_active=category_model.is_active,
         )

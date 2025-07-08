@@ -13,11 +13,7 @@ class DjangoORMGenreRepository(GenreRepository):
 
     def save(self, genre: Genre):
         with transaction.atomic():
-            genre_model = self.model.objects.create(
-                id=genre.id,
-                name=genre.name,
-                is_active=genre.is_active,
-            )
+            genre_model = GenreModelMapper.to_model(genre)
             genre_model.save()
             if genre.categories:
                 # Buscar instâncias de Category a partir dos IDs
@@ -29,12 +25,7 @@ class DjangoORMGenreRepository(GenreRepository):
     def get_by_id(self, id: str) -> Optional[Genre]:
         try:
             genre_model = self.model.objects.get(id=id)
-            return Genre(
-                name=genre_model.name,
-                id=genre_model.id,
-                is_active=genre_model.is_active,
-                categories={category.id for category in genre_model.categories.all()},
-            )
+            return GenreModelMapper.to_entity(genre_model)
         except self.model.DoesNotExist:
             return None
 
@@ -45,12 +36,7 @@ class DjangoORMGenreRepository(GenreRepository):
         for genre_model in self.model.objects.all():
             genre_model
         return [
-            Genre(
-                id=genre_model.id,
-                name=genre_model.name,
-                is_active=genre_model.is_active,
-                categories={category.id for category in genre_model.categories.all()},
-            )
+            GenreModelMapper.to_entity(genre_model)
             for genre_model in self.model.objects.all()
         ]
 
@@ -66,3 +52,21 @@ class DjangoORMGenreRepository(GenreRepository):
                 is_active=genre.is_active,
             )
             genre_model.categories.set(genre.categories)
+
+
+class GenreModelMapper:
+    @staticmethod
+    def to_model(genre: Genre) -> GenreModel:
+        return GenreModel(
+            id=genre.id,
+            name=genre.name,
+            is_active=genre.is_active,
+        )
+
+    def to_entity(genre_model: GenreModel) -> Genre:
+        return Genre(
+            id=genre_model.id,
+            name=genre_model.name,
+            is_active=genre_model.is_active,
+            categories={category.id for category in genre_model.categories.all()},
+        )

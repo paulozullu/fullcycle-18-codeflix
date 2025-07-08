@@ -30,9 +30,9 @@ class TestCreateCategory:
     def test_create_category_with_invalid_data(self):
         use_case = CreateCategory(repository=MagicMock(CategoryRepository))
         with pytest.raises(
-            InvalidCategoryData, match="name should not be empty"
+            InvalidCategoryData, match="name cannot be empty"
         ) as exec_info:
             use_case.execute(CreateCategoryRequest(name=""))
 
         assert exec_info.type == InvalidCategoryData
-        assert str(exec_info.value) == "name should not be empty"
+        assert str(exec_info.value) == "name cannot be empty"

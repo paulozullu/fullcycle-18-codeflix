@@ -1,6 +1,10 @@
+from ast import Not
 from dataclasses import dataclass, field
 import uuid
 from uuid import UUID
+
+from src.core.category.domain.notification import Notification
+
 
 @dataclass
 class Category:
@@ -9,30 +13,32 @@ class Category:
     is_active: bool = True
     id: UUID = field(default_factory=uuid.uuid4)
 
-    # def __init__(self, name, id="", description="", is_active=True):
-    #     self.id = id or uuid.uuid4()
-    #     self.name = name
-    #     self.description = description
-    #     self.is_active = is_active
-
-    #     self.validate()
+    notification: Notification = field(default_factory=Notification)
 
     def __post_init__(self):
         self.validate()
 
     def validate(self):
         if len(self.name) > 255:
-            raise ValueError("name should not be longer than 255 characters")
+            # raise ValueError("name should not be longer than 255 characters")
+            self.notification.add_error("name cannot be longer than 255")
 
         if not self.name:
-            raise ValueError("name should not be empty")
+            # raise ValueError("name should not be empty")
+            self.notification.add_error("name cannot be empty")
+
+        if len(self.description) > 1024:
+            self.notification.add_error("description cannot be longer than 1024")
+
+        if self.notification.has_errors:
+            raise ValueError(self.notification.messages)
 
     def __str__(self):
         return f"{self.name} - {self.description} ({self.is_active})"
 
     def __repr__(self):
         return f"{self.name} ({self.id})"
-    
+
     def __eq__(self, other):
         if not isinstance(other, Category):
             return False

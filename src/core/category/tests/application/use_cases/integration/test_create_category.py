@@ -33,9 +33,9 @@ class TestCreateCategory:
         request = CreateCategoryRequest(name="")
 
         with pytest.raises(
-            InvalidCategoryData, match="name should not be empty"
+            InvalidCategoryData, match="name cannot be empty"
         ) as exec_info:
             response = use_case.execute(request)
 
         assert exec_info.type == InvalidCategoryData
-        assert str(exec_info.value) == "name should not be empty"
+        assert str(exec_info.value) == "name cannot be empty"

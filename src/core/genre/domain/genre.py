@@ -2,12 +2,13 @@ from dataclasses import dataclass, field
 import uuid
 from uuid import UUID
 
+from src.core._shared.entity import BaseEntity
+
 
 @dataclass
-class Genre:
+class Genre(BaseEntity):
     name: str
     is_active: bool = True
-    id: UUID = field(default_factory=uuid.uuid4)
     categories: set[UUID] = field(default_factory=set)
 
     def __post_init__(self):
@@ -25,12 +26,6 @@ class Genre:
 
     def __repr__(self):
         return f"<Genre {self.name} ({self.id})>"
-
-    def __eq__(self, other):
-        if not isinstance(other, Genre):
-            return False
-
-        return self.id == other.id
 
     def change_name(self, name):
         self.name = name

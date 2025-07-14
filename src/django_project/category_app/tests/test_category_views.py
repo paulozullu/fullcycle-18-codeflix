@@ -13,7 +13,7 @@ from src.core.category.domain.category import Category
 def category_movie():
     return Category(
         name="Movie",
-        description="Moview description",
+        description="A Movie description",
         is_active=True,
     )
 
@@ -51,6 +51,44 @@ class TestCategoryAPI:
         expected_data = {
             "data": [
                 {
+                    "id": str(categories[1].id),
+                    "name": category_documentary.name,
+                    "description": category_documentary.description,
+                    "is_active": category_documentary.is_active,
+                },
+                {
+                    "id": str(categories[0].id),
+                    "name": category_movie.name,
+                    "description": category_movie.description,
+                    "is_active": category_movie.is_active,
+                },
+            ]
+        }
+
+        url = "/api/categories/"
+        response = APIClient().get(url)
+
+        assert response.status_code == status.HTTP_200_OK
+        assert len(response.data["data"]) == 2
+        assert response.data == expected_data
+
+    def test_list_categories_ordered_by_description(
+        self,
+        category_movie: Category,
+        category_documentary: Category,
+        category_repository: DjangoORMCategoryRepository,
+    ) -> None:
+        """
+        Test the list categories API endpoint.
+        """
+        category_repository.save(category_movie)
+        category_repository.save(category_documentary)
+
+        categories = category_repository.find_all()
+
+        expected_data = {
+            "data": [
+                {
                     "id": str(categories[0].id),
                     "name": category_movie.name,
                     "description": category_movie.description,
@@ -65,7 +103,7 @@ class TestCategoryAPI:
             ]
         }
 
-        url = "/api/categories/"
+        url = "/api/categories/?order_by=description"
         response = APIClient().get(url)
 
         assert response.status_code == status.HTTP_200_OK
@@ -209,6 +247,7 @@ class TestUpdateAPI:
 
         assert response.status_code == status.HTTP_404_NOT_FOUND
 
+
 @pytest.mark.django_db
 class TestDeleteAPI:
     def test_return_400_when_id_is_invalid(
@@ -245,9 +284,12 @@ class TestDeleteAPI:
 
         assert response.status_code == status.HTTP_404_NOT_FOUND
 
+
 @pytest.mark.django_db
 class TestPatchCategory:
-    def test_patch_category(self, category_movie: Category, category_repository: DjangoORMCategoryRepository) -> None:
+    def test_patch_category(
+        self, category_movie: Category, category_repository: DjangoORMCategoryRepository
+    ) -> None:
         """
         Test the patch category API endpoint.
         """
@@ -281,4 +323,3 @@ class TestPatchCategory:
         response = APIClient().patch(url, data=payload)
 
         assert response.status_code == status.HTTP_404_NOT_FOUND
-

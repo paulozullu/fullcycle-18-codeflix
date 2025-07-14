@@ -3,9 +3,16 @@ from unittest import mock
 from unittest.mock import create_autospec
 
 from src.core.category.domain.category_repository import CategoryRepository
-from src.core.category.application.use_cases.list_categories import CategoryOutput, ListCategories, ListCategoriesRequest, ListCategoriesResponse
+from src.core.category.application.use_cases.list_categories import (
+    CategoryOutput,
+    ListCategories,
+    ListCategoriesRequest,
+    ListCategoriesResponse,
+)
 from src.core.category.domain.category import Category
-from src.core.category.infra.in_memory_category_repository import InMemoryCategoryRepository
+from src.core.category.infra.in_memory_category_repository import (
+    InMemoryCategoryRepository,
+)
 
 
 class TestListCategories:
@@ -25,9 +32,15 @@ class TestListCategories:
         request = ListCategoriesRequest()
 
         response = use_case.execute(request)
-        
+
         assert response == ListCategoriesResponse(
             data=[
+                CategoryOutput(
+                    id=category3.id,
+                    name=category3.name,
+                    description=category3.description,
+                    is_active=category3.is_active,
+                ),
                 CategoryOutput(
                     id=category.id,
                     name=category.name,
@@ -40,12 +53,6 @@ class TestListCategories:
                     description=category2.description,
                     is_active=category2.is_active,
                 ),
-                CategoryOutput(
-                    id=category3.id,
-                    name=category3.name,
-                    description=category3.description,
-                    is_active=category3.is_active,
-                ),
             ]
         )
         assert len(response.data) == 3
@@ -56,7 +63,5 @@ class TestListCategories:
         request = ListCategoriesRequest()
 
         response = use_case.execute(request)
-        assert response == ListCategoriesResponse(
-            data=[]
-        )
+        assert response == ListCategoriesResponse(data=[])
         assert len(response.data) == 0

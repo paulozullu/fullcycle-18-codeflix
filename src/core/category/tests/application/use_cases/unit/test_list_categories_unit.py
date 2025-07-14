@@ -1,7 +1,12 @@
 from unittest.mock import create_autospec
 
 from src.core.category.domain.category_repository import CategoryRepository
-from src.core.category.application.use_cases.list_categories import CategoryOutput, ListCategories, ListCategoriesRequest, ListCategoriesResponse
+from src.core.category.application.use_cases.list_categories import (
+    CategoryOutput,
+    ListCategories,
+    ListCategoriesRequest,
+    ListCategoriesResponse,
+)
 from src.core.category.domain.category import Category
 
 
@@ -28,6 +33,12 @@ class TestListCategories:
         assert response == ListCategoriesResponse(
             data=[
                 CategoryOutput(
+                    id=category3.id,
+                    name=category3.name,
+                    description=category3.description,
+                    is_active=category3.is_active,
+                ),
+                CategoryOutput(
                     id=category.id,
                     name=category.name,
                     description=category.description,
@@ -38,12 +49,6 @@ class TestListCategories:
                     name=category2.name,
                     description=category2.description,
                     is_active=category2.is_active,
-                ),
-                CategoryOutput(
-                    id=category3.id,
-                    name=category3.name,
-                    description=category3.description,
-                    is_active=category3.is_active,
                 ),
             ]
         )
@@ -56,8 +61,6 @@ class TestListCategories:
         request = ListCategoriesRequest()
 
         response = use_case.execute(request)
-        assert response == ListCategoriesResponse(
-            data=[]
-        )
+        assert response == ListCategoriesResponse(data=[])
         assert len(response.data) == 0
         mock_repository.find_all.assert_called_once()

@@ -50,7 +50,8 @@ class CategoryViewSet(viewsets.ViewSet):
         List all categories.
         """
         order_by = request.query_params.get("order_by", "name")
-        input = ListCategoriesRequest(order_by=order_by)
+        current_page = int(request.query_params.get("current_page", 1))
+        input = ListCategoriesRequest(order_by=order_by, current_page=current_page)
         use_case = ListCategories(repository=DjangoORMCategoryRepository())
         output = use_case.execute(input)
         serializer = ListCategoriesResponseSerializer(instance=output)

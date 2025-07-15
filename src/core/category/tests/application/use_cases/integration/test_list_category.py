@@ -1,14 +1,10 @@
+from ast import List
 from encodings.punycode import T
-from unicodedata import category
-from unittest import mock
-from unittest.mock import create_autospec
 
 from src.core.category.domain.category_repository import CategoryRepository
 from src.core.category.application.use_cases.list_category import (
     CategoryOutput,
     ListCategory,
-    ListCategoriesRequest,
-    ListCategoryResponse,
     ListOutputMeta,
 )
 from src.core.category.domain.category import Category
@@ -31,11 +27,11 @@ class TestListCategory:
         repository.save(category2)
         repository.save(category3)
         use_case = ListCategory(repository=repository)
-        request = ListCategoriesRequest()
+        input = ListCategory.Input()
 
-        response = use_case.execute(request)
+        response = use_case.execute(input)
 
-        assert response == ListCategoryResponse(
+        assert response == ListCategory.Output(
             data=[
                 CategoryOutput(
                     id=category3.id,
@@ -50,17 +46,18 @@ class TestListCategory:
                     is_active=category.is_active,
                 ),
             ],
-            meta=ListOutputMeta(per_page=request.per_page, current_page=1, total=3),
+            meta=ListOutputMeta(per_page=input.per_page, current_page=1, total=3),
         )
         assert len(response.data) == 2
 
     def test_return_empty_list(self):
         repository = InMemoryCategoryRepository(categories=[])
         use_case = ListCategory(repository=repository)
-        request = ListCategoriesRequest()
+        input = ListCategory.Input()
 
-        response = use_case.execute(request)
-        assert response == ListCategoryResponse(
-            data=[], meta=ListOutputMeta(current_page=1, per_page=request.per_page, total=0)
+        response = use_case.execute(input)
+        assert response == ListCategory.Output(
+            data=[],
+            meta=ListOutputMeta(current_page=1, per_page=input.per_page, total=0),
         )
         assert len(response.data) == 0

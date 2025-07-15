@@ -4,19 +4,18 @@ from src.core.category.domain.category_repository import CategoryRepository
 from src.core.category.application.use_cases.exceptions import CategoryNotFound
 
 
-@dataclass
-class UpdateCategoryRequest:
-    id: UUID
-    name: str | None = None
-    description: str | None = None
-    is_active: bool | None = None
-
-
 class UpdateCategory:
+    @dataclass
+    class Input:
+        id: UUID
+        name: str | None = None
+        description: str | None = None
+        is_active: bool | None = None
+
     def __init__(self, repository: CategoryRepository):
         self.repository = repository
 
-    def execute(self, request: UpdateCategoryRequest) -> None:
+    def execute(self, request: Input) -> None:
         category = self.repository.get_by_id(request.id)
 
         if not category:

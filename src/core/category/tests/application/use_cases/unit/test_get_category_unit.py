@@ -1,11 +1,8 @@
-from unittest import mock
-from unittest.mock import MagicMock, create_autospec
+from unittest.mock import create_autospec
 
 from src.core.category.domain.category_repository import CategoryRepository
 from src.core.category.application.use_cases.get_category import (
     GetCategory,
-    GetCategoryRequest,
-    GetCategoryResponse,
 )
 from src.core.category.domain.category import Category
 
@@ -17,11 +14,11 @@ class TestGetCategory:
         mock_repository.get_by_id.return_value = category
 
         use_case = GetCategory(repository=mock_repository)
-        request = GetCategoryRequest(id=category.id)
+        input = GetCategory.Input(id=category.id)
 
-        response = use_case.execute(request)
+        response = use_case.execute(input)
 
-        assert response == GetCategoryResponse(
+        assert response == GetCategory.Output(
             id=category.id,
             name="Filme",
             description="Filmes em geral",

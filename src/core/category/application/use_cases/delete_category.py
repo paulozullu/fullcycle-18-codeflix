@@ -5,16 +5,15 @@ from src.core.category.domain.category_repository import CategoryRepository
 from src.core.category.application.use_cases.exceptions import CategoryNotFound
 
 
-@dataclass
-class DeleteCategoryRequest:
-    id: UUID
-
-
 class DeleteCategory:
+    @dataclass
+    class Input:
+        id: UUID
+
     def __init__(self, repository: CategoryRepository):
         self.repository = repository
 
-    def execute(self, request: DeleteCategoryRequest) -> None:
+    def execute(self, request: Input) -> None:
         category = self.repository.get_by_id(request.id)
 
         if not category:

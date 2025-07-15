@@ -4,7 +4,6 @@ import pytest
 from src.core.category.application.use_cases.exceptions import CategoryNotFound
 from src.core.category.application.use_cases.update_category import (
     UpdateCategory,
-    UpdateCategoryRequest,
 )
 from src.core.category.domain.category import Category
 from src.core.category.infra.in_memory_category_repository import (
@@ -37,12 +36,12 @@ class TestUpdateGenre:
             repository=genre_repository, category_repository=category_repository
         )
 
-        request = UpdateGenre.Input(
+        input = UpdateGenre.Input(
             id=genre.id,
             name="Action",
             categories={category.id},
         )
-        use_case.execute(request)
+        use_case.execute(input)
 
         updated_genre = genre_repository.get_by_id(genre.id)
 
@@ -61,13 +60,13 @@ class TestUpdateGenre:
         use_case = UpdateGenre(
             repository=genre_repository, category_repository=category_repository
         )
-        request = UpdateGenre.Input(
+        input = UpdateGenre.Input(
             id=genre.id,
             name="Terror",
             categories={category.id},
             is_active=True,
         )
-        use_case.execute(request)
+        use_case.execute(input)
 
         updated_genre = genre_repository.get_by_id(genre.id)
 
@@ -81,11 +80,11 @@ class TestUpdateGenre:
         repository = InMemoryCategoryRepository()
         repository.save(category)
         id = uuid4()
-        request = UpdateCategoryRequest(id=id, name="Teste")
+        input = UpdateCategory.Input(id=id, name="Teste")
         use_case = UpdateCategory(repository)
 
         with pytest.raises(CategoryNotFound) as exc:
-            use_case.execute(request)
+            use_case.execute(input)
 
         assert exc.type == CategoryNotFound
 
@@ -99,13 +98,13 @@ class TestUpdateGenre:
         use_case = UpdateGenre(
             repository=genre_repository, category_repository=category_repository
         )
-        request = UpdateGenre.Input(
+        input = UpdateGenre.Input(
             id=genre.id,
             name="Terror",
             categories={category.id},
             is_active=False,
         )
-        use_case.execute(request)
+        use_case.execute(input)
 
         updated_genre = genre_repository.get_by_id(genre.id)
 
@@ -119,11 +118,11 @@ class TestUpdateGenre:
         repository = InMemoryCategoryRepository()
         repository.save(category)
         id = uuid4()
-        request = UpdateCategoryRequest(id=id, name="Teste")
+        input = UpdateCategory.Input(id=id, name="Teste")
         use_case = UpdateCategory(repository)
 
         with pytest.raises(CategoryNotFound) as exc:
-            use_case.execute(request)
+            use_case.execute(input)
 
         assert exc.type == CategoryNotFound
 
@@ -140,13 +139,13 @@ class TestUpdateGenre:
 
         new_category = Category(name="New", description="Lançamentos")
         category_repository.save(new_category)
-        request = UpdateGenre.Input(
+        input = UpdateGenre.Input(
             id=genre.id,
             name=genre.name,
             categories={category.id, new_category.id},
             is_active=genre.is_active
         )
-        use_case.execute(request)
+        use_case.execute(input)
 
         updated_genre = genre_repository.get_by_id(genre.id)
 
@@ -169,13 +168,13 @@ class TestUpdateGenre:
             repository=genre_repository, category_repository=category_repository
         )
 
-        request = UpdateGenre.Input(
+        input = UpdateGenre.Input(
             id=genre.id,
             name=genre.name,
             categories={category.id},
             is_active=genre.is_active,
         )
-        use_case.execute(request)
+        use_case.execute(input)
 
         updated_genre = genre_repository.get_by_id(genre.id)
 
@@ -198,13 +197,13 @@ class TestUpdateGenre:
 
         new_category = Category(name="New", description="Lançamentos")
         category_repository.save(new_category)
-        request = UpdateGenre.Input(
+        input = UpdateGenre.Input(
             id=genre.id,
             name="Action",
             categories={category.id, new_category.id},
             is_active=False,
         )
-        use_case.execute(request)
+        use_case.execute(input)
 
         updated_genre = genre_repository.get_by_id(genre.id)
 

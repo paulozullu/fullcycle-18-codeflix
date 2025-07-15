@@ -2,7 +2,7 @@ from curses import meta
 from dataclasses import dataclass
 from uuid import UUID
 from src.config import DEFAULT_PAGINATION_SIZE
-from src.core._shared.list_use_case import ListOutputMeta, ListRequest
+from src.core._shared.list_use_case import ListOutputMeta, ListInput
 from src.core.cast_member.domain.cast_member import Type
 from src.core.cast_member.domain.cast_member_repository import CastMemberRepository
 
@@ -24,7 +24,7 @@ class ListCastMember:
         meta: ListOutputMeta
 
     @dataclass
-    class Input(ListRequest): ...
+    class Input(ListInput): ...
 
     def execute(self, input: Input) -> Output:
         cast_members = self.repository.find_all()

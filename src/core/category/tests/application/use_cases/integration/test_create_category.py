@@ -2,7 +2,7 @@
 
 from uuid import UUID
 import pytest
-from src.core.category.application.use_cases.create_category import CreateCategory, CreateCategoryRequest, CreateCategoryResponse
+from src.core.category.application.use_cases.create_category import CreateCategory
 from src.core.category.application.use_cases.exceptions import InvalidCategoryData
 from src.core.category.infra.in_memory_category_repository import InMemoryCategoryRepository
 
@@ -11,14 +11,14 @@ class TestCreateCategory:
     def test_create_category_with_valid_data(self):
         repository = InMemoryCategoryRepository()
         use_case = CreateCategory(repository=repository)
-        request = CreateCategoryRequest(
+        input = CreateCategory.Input(
             name="Filme", description="Filmes em geral", is_active=True
         )
 
-        response = use_case.execute(request)
+        response = use_case.execute(input)
 
         assert response is not None
-        assert isinstance(response, CreateCategoryResponse)
+        assert isinstance(response, CreateCategory.Output)
         assert isinstance(response.id, UUID)
         assert len(repository.categories) == 1
 
@@ -30,12 +30,12 @@ class TestCreateCategory:
 
     def test_create_category_with_invalid_data(self):
         use_case = CreateCategory(repository=InMemoryCategoryRepository())
-        request = CreateCategoryRequest(name="")
+        input = CreateCategory.Input(name="")
 
         with pytest.raises(
             InvalidCategoryData, match="name cannot be empty"
         ) as exec_info:
-            response = use_case.execute(request)
+            response = use_case.execute(input)
 
         assert exec_info.type == InvalidCategoryData
         assert str(exec_info.value) == "name cannot be empty"

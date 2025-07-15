@@ -2,7 +2,6 @@ from unittest.mock import create_autospec
 from src.core.category.domain.category_repository import CategoryRepository
 from src.core.category.application.use_cases.update_category import (
     UpdateCategory,
-    UpdateCategoryRequest,
 )
 from src.core.category.domain.category import Category
 
@@ -14,9 +13,9 @@ class TestUpdateCategory:
         mock_repository.get_by_id.return_value = category
 
         use_case = UpdateCategory(repository=mock_repository)
-        request = UpdateCategoryRequest(id=category.id, name="Série")
+        input = UpdateCategory.Input(id=category.id, name="Série")
 
-        use_case.execute(request)
+        use_case.execute(input)
 
         assert category.name == "Série"
         assert category.description == "Filmes em geral"
@@ -28,12 +27,12 @@ class TestUpdateCategory:
         mock_repository.get_by_id.return_value = category
 
         use_case = UpdateCategory(repository=mock_repository)
-        request = UpdateCategoryRequest(id=category.id, description="Séries em geral")
+        input = UpdateCategory.Input(id=category.id, description="Séries em geral")
 
-        use_case.execute(request)
+        use_case.execute(input)
 
         assert category.name == "Filme"
-        assert category.description == request.description
+        assert category.description == input.description
         mock_repository.update.assert_called_once_with(category)
 
     def test_can_deactivate_category(self):
@@ -42,9 +41,9 @@ class TestUpdateCategory:
         mock_repository.get_by_id.return_value = category
 
         use_case = UpdateCategory(repository=mock_repository)
-        request = UpdateCategoryRequest(id=category.id, is_active=False)
+        input = UpdateCategory.Input(id=category.id, is_active=False)
 
-        use_case.execute(request)
+        use_case.execute(input)
 
         assert category.name == "Filme"
         assert category.description == "Filmes em geral"
@@ -59,9 +58,9 @@ class TestUpdateCategory:
         mock_repository.get_by_id.return_value = category
 
         use_case = UpdateCategory(repository=mock_repository)
-        request = UpdateCategoryRequest(id=category.id, is_active=True)
+        input = UpdateCategory.Input(id=category.id, is_active=True)
 
-        use_case.execute(request)
+        use_case.execute(input)
 
         assert category.name == "Filme"
         assert category.description == "Filmes em geral"

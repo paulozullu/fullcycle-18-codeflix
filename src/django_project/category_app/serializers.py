@@ -3,7 +3,7 @@ from rest_framework import serializers
 from src.core._shared.serializer import ListOutputMetaSerializer
 
 
-class CategoryResponseSerializer(serializers.Serializer):
+class CategoryOutputSerializer(serializers.Serializer):
     """
     Serializer for the Category response.
     """
@@ -14,24 +14,24 @@ class CategoryResponseSerializer(serializers.Serializer):
     is_active = serializers.BooleanField()
 
 
-class ListCategoriesResponseSerializer(serializers.Serializer):
+class ListCategoriesOutputSerializer(serializers.Serializer):
     """
     Serializer for the List Categories response.
     """
 
-    data = CategoryResponseSerializer(many=True)
+    data = CategoryOutputSerializer(many=True)
     meta = ListOutputMetaSerializer()
 
 
-class RetrieveCategoryResponseSerializer(serializers.Serializer):
+class RetrieveCategoryOutputSerializer(serializers.Serializer):
     """
     Serializer for the Retrieve Category response.
     """
 
-    data = CategoryResponseSerializer(source="*")
+    data = CategoryOutputSerializer(source="*")
 
 
-class RetrieveCategoryRequestSerializer(serializers.Serializer):
+class RetrieveCategoryInputSerializer(serializers.Serializer):
     """
     Serializer for the Retrieve Category request.
     """
@@ -39,7 +39,7 @@ class RetrieveCategoryRequestSerializer(serializers.Serializer):
     id = serializers.UUIDField()
 
 
-class CreateCategoryRequestSerializer(serializers.Serializer):
+class CreateCategoryInputSerializer(serializers.Serializer):
     """
     Serializer for the Create Category request.
     """
@@ -49,7 +49,7 @@ class CreateCategoryRequestSerializer(serializers.Serializer):
     is_active = serializers.BooleanField(default=True)
 
 
-class CreateCategoryResponseSerializer(serializers.Serializer):
+class CreateCategoryOutputSerializer(serializers.Serializer):
     """
     Serializer for the Create Category response.
     """
@@ -57,7 +57,7 @@ class CreateCategoryResponseSerializer(serializers.Serializer):
     id = serializers.UUIDField()
 
 
-class UpdateCategoryRequestSerializer(serializers.Serializer):
+class UpdateCategoryInputSerializer(serializers.Serializer):
     """
     Serializer for the Update Category request.
     """
@@ -68,7 +68,7 @@ class UpdateCategoryRequestSerializer(serializers.Serializer):
     is_active = serializers.BooleanField()
 
 
-class DeleteCategoryRequestSerializer(serializers.Serializer):
+class DeleteCategoryInputSerializer(serializers.Serializer):
     """
     Serializer for the Retrieve Category request.
     """

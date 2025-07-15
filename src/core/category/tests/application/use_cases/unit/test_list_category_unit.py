@@ -4,8 +4,6 @@ from src.core.category.domain.category_repository import CategoryRepository
 from src.core.category.application.use_cases.list_category import (
     CategoryOutput,
     ListCategory,
-    ListCategoriesRequest,
-    ListCategoryResponse,
     ListOutputMeta,
 )
 from src.core.category.domain.category import Category
@@ -28,10 +26,10 @@ class TestListCategory:
         ]
 
         use_case = ListCategory(repository=mock_repository)
-        request = ListCategoriesRequest()
+        input = ListCategory.Input()
 
-        response = use_case.execute(request)
-        assert response == ListCategoryResponse(
+        response = use_case.execute(input)
+        assert response == ListCategory.Output(
             data=[
                 CategoryOutput(
                     id=category3.id,
@@ -46,7 +44,7 @@ class TestListCategory:
                     is_active=category.is_active,
                 ),
             ],
-            meta=ListOutputMeta(current_page=1, per_page=request.per_page, total=3),
+            meta=ListOutputMeta(current_page=1, per_page=input.per_page, total=3),
         )
         assert len(response.data) == 2
         mock_repository.find_all.assert_called_once()
@@ -54,10 +52,10 @@ class TestListCategory:
     def test_return_empty_list(self):
         mock_repository = create_autospec(CategoryRepository)
         use_case = ListCategory(repository=mock_repository)
-        request = ListCategoriesRequest()
+        input = ListCategory.Input()
 
-        response = use_case.execute(request)
-        assert response == ListCategoryResponse(
+        response = use_case.execute(input)
+        assert response == ListCategory.Output(
             data=[],
             meta=ListOutputMeta(),
         )

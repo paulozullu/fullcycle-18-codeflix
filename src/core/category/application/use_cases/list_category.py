@@ -2,12 +2,8 @@ from dataclasses import dataclass
 from uuid import UUID
 
 from src.config import DEFAULT_PAGINATION_SIZE
-from src.core._shared.list_use_case import ListOutputMeta, ListRequest, ListResponse
+from src.core._shared.list_use_case import ListOutputMeta, ListInput, ListOutput
 from src.core.category.domain.category_repository import CategoryRepository
-
-
-@dataclass
-class ListCategoriesRequest(ListRequest): ...
 
 
 @dataclass
@@ -18,16 +14,20 @@ class CategoryOutput:
     is_active: bool
 
 
-@dataclass
-class ListCategoryResponse(ListResponse):
-    data: list[CategoryOutput]
-
 
 class ListCategory:
+
+    @dataclass
+    class Input(ListInput): ...
+
+    @dataclass
+    class Output(ListOutput):
+        data: list[CategoryOutput]
+
     def __init__(self, repository: CategoryRepository):
         self.repository = repository
 
-    def execute(self, request: ListCategoriesRequest) -> ListCategoryResponse:
+    def execute(self, request: Input) -> Output:
         categories = self.repository.find_all()
         sorted_categories = sorted(
             [
@@ -47,7 +47,7 @@ class ListCategory:
             page_offset : page_offset + DEFAULT_PAGINATION_SIZE
         ]
 
-        return ListCategoryResponse(
+        return ListCategory.Output(
             data=categories_page,
             meta=ListOutputMeta(
                 current_page=request.current_page,

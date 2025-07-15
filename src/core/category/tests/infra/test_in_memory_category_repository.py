@@ -1,7 +1,3 @@
-from src.core.category.application.use_cases.get_category import (
-    GetCategory,
-    GetCategoryResponse,
-)
 from src.core.category.domain.category import Category
 from src.core.category.infra.in_memory_category_repository import (
     InMemoryCategoryRepository,

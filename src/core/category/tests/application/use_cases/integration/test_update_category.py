@@ -1,13 +1,9 @@
-from calendar import c
-from operator import is_
-from unicodedata import category
 from uuid import uuid4
 
 import pytest
 from src.core.category.application.use_cases.exceptions import CategoryNotFound
 from src.core.category.application.use_cases.update_category import (
     UpdateCategory,
-    UpdateCategoryRequest,
 )
 from src.core.category.domain.category import Category
 from src.core.category.infra.in_memory_category_repository import (
@@ -23,10 +19,10 @@ class TestUpdateCategory:
 
         use_case = UpdateCategory(repository=repository)
 
-        request = UpdateCategoryRequest(
+        input = UpdateCategory.Input(
             id=category.id, name="Série", description="Séries em geral"
         )
-        use_case.execute(request)
+        use_case.execute(input)
 
         updated_category = repository.get_by_id(category.id)
 
@@ -40,9 +36,9 @@ class TestUpdateCategory:
         )
         repository.save(category)
         use_case = UpdateCategory(repository=repository)
-        request = UpdateCategoryRequest(id=category.id, is_active=True)
+        input = UpdateCategory.Input(id=category.id, is_active=True)
 
-        use_case.execute(request)
+        use_case.execute(input)
         updated_category = repository.get_by_id(category.id)
 
         assert updated_category.is_active is True
@@ -51,10 +47,10 @@ class TestUpdateCategory:
         category = Category(name="Filme", description="Filmes em Geral", is_active=True)
         repository = InMemoryCategoryRepository()
         repository.save(category)
-        request = UpdateCategoryRequest(id=category.id, is_active=False)
+        input = UpdateCategory.Input(id=category.id, is_active=False)
         use_case = UpdateCategory(repository)
 
-        use_case.execute(request)
+        use_case.execute(input)
         updated_category = repository.get_by_id(category.id)
 
         assert updated_category.is_active == False
@@ -64,10 +60,10 @@ class TestUpdateCategory:
         repository = InMemoryCategoryRepository()
         repository.save(category)
         id = uuid4()
-        request = UpdateCategoryRequest(id=id, name="Teste")
+        input = UpdateCategory.Input(id=id, name="Teste")
         use_case = UpdateCategory(repository)
 
         with pytest.raises(CategoryNotFound) as exc:
-            use_case.execute(request)
+            use_case.execute(input)
 
         assert exc.type == CategoryNotFound

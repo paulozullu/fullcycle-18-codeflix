@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from uuid import UUID
 from src.config import DEFAULT_PAGINATION_SIZE
-from src.core._shared.list_use_case import ListOutputMeta, ListRequest, ListResponse
+from src.core._shared.list_use_case import ListOutputMeta, ListInput, ListOutput
 from src.core.genre.domain.genre import Genre
 from src.core.genre.domain.genre_repository import GenreRepository
 from src.django_project.category_app import repository
@@ -20,10 +20,10 @@ class ListGenre:
         self.repository = repository
 
     @dataclass
-    class Input(ListRequest): ...
+    class Input(ListInput): ...
 
     @dataclass
-    class Output(ListResponse):
+    class Output(ListOutput):
         data: list[GenreOutput]
 
     def execute(self, input: Input) -> Output:

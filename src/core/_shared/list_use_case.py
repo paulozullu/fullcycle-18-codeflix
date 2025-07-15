@@ -6,7 +6,7 @@ from src.config import DEFAULT_PAGINATION_SIZE
 
 
 @dataclass
-class ListRequest(ABC):
+class ListInput(ABC):
     current_page: int = 1
     order_by: str = "name"
     per_page: int = DEFAULT_PAGINATION_SIZE
@@ -23,6 +23,6 @@ T = TypeVar("T")
 
 
 @dataclass
-class ListResponse(Generic[T], ABC):
+class ListOutput(Generic[T], ABC):
     data: list[T] = field(default_factory=list)
     meta: ListOutputMeta = field(default_factory=ListOutputMeta)

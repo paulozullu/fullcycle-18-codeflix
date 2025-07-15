@@ -31,7 +31,7 @@ class TestListCastMember:
             meta=ListOutputMeta(
                 total=1,
                 current_page=1,
-                per_page=2,
+                per_page=input.per_page,
             ),
         )
 
@@ -47,7 +47,6 @@ class TestListCastMember:
             meta=ListOutputMeta(
                 total=0,
                 current_page=1,
-                per_page=2,
+                per_page=input.per_page,
             ),
         )
-        

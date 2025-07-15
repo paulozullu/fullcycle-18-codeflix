@@ -26,8 +26,8 @@ class TestListGenre:
         genre_repository.save(genre)
 
         use_case = ListGenre(repository=genre_repository)
-
-        output = use_case.execute(input=ListGenre.Input)
+        input = ListGenre.Input()
+        output = use_case.execute(input)
 
         assert len(output.data) == 1
         assert output == ListGenre.Output(
@@ -42,14 +42,15 @@ class TestListGenre:
             meta=ListOutputMeta(
                 total=1,
                 current_page=1,
-                per_page=2,
+                per_page=input.per_page,
             ),
         )
 
     def test_list_genre_when_do_not_exist_genre(self):
         genre_repository = InMemoryGenreRepository()
         use_case = ListGenre(genre_repository)
-        output = use_case.execute(input=ListGenre.Input)
+        input = ListGenre.Input()
+        output = use_case.execute(input)
 
         assert len(output.data) == 0
         assert output == ListGenre.Output(
@@ -57,6 +58,6 @@ class TestListGenre:
             meta=ListOutputMeta(
                 total=0,
                 current_page=1,
-                per_page=2,
+                per_page=input.per_page,
             ),
         )

@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from uuid import UUID
 
+from src.config import DEFAULT_PAGINATION_SIZE
 from src.core._shared.list_use_case import ListOutputMeta, ListRequest, ListResponse
 from src.core.category.domain.category_repository import CategoryRepository
 
@@ -41,17 +42,16 @@ class ListCategories:
             key=lambda category: getattr(category, request.order_by),
         )
 
-        DEFAULT_PAGE_SIZE = 2
-        page_offset = (request.current_page - 1) * DEFAULT_PAGE_SIZE
+        page_offset = (request.current_page - 1) * DEFAULT_PAGINATION_SIZE
         categories_page = sorted_categories[
-            page_offset : page_offset + DEFAULT_PAGE_SIZE
+            page_offset : page_offset + DEFAULT_PAGINATION_SIZE
         ]
 
         return ListCategoriesResponse(
             data=categories_page,
             meta=ListOutputMeta(
                 current_page=request.current_page,
-                per_page=DEFAULT_PAGE_SIZE,
+                per_page=DEFAULT_PAGINATION_SIZE,
                 total=len(sorted_categories),
             ),
         )

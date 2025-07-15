@@ -46,7 +46,7 @@ class TestListCategories:
                     is_active=category.is_active,
                 ),
             ],
-            meta=ListOutputMeta(current_page=1, per_page=2, total=3),
+            meta=ListOutputMeta(current_page=1, per_page=request.per_page, total=3),
         )
         assert len(response.data) == 2
         mock_repository.find_all.assert_called_once()
@@ -59,7 +59,7 @@ class TestListCategories:
         response = use_case.execute(request)
         assert response == ListCategoriesResponse(
             data=[],
-            meta=ListOutputMeta(current_page=1, per_page=2, total=0),
+            meta=ListOutputMeta(current_page=1, per_page=request.per_page, total=0),
         )
         assert len(response.data) == 0
         mock_repository.find_all.assert_called_once()

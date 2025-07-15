@@ -48,14 +48,15 @@ class TestListGenre:
 
     def test_list_empty_genres(self, mock_empty_genre_repository):
         use_case = ListGenre(mock_empty_genre_repository)
-        output = use_case.execute(ListGenre.Input())
+        input = ListGenre.Input()
+        output = use_case.execute(input)
 
         assert output == ListGenre.Output(
             data=[],
             meta=ListOutputMeta(
                 total=0,
                 current_page=1,
-                per_page=2,
+                per_page=input.per_page,
             ),
         )
 
@@ -85,7 +86,7 @@ class TestListGenre:
             meta=ListOutputMeta(
                 total=2,
                 current_page=1,
-                per_page=2,
+                per_page=input.per_page,
             ),
         )
 
@@ -104,5 +105,5 @@ class TestListGenre:
         assert output.meta == ListOutputMeta(
             total=2,
             current_page=1,
-            per_page=2,
+            per_page=input.per_page,
         )

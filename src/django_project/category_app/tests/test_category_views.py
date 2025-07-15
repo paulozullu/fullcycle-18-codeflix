@@ -28,6 +28,15 @@ def category_documentary():
 
 
 @pytest.fixture
+def category_cartoon():
+    return Category(
+        name="Cartoon",
+        description="Cartoon description",
+        is_active=True,
+    )
+
+
+@pytest.fixture
 def category_repository() -> DjangoORMCategoryRepository:
     return DjangoORMCategoryRepository()
 
@@ -62,7 +71,8 @@ class TestCategoryAPI:
                     "description": category_movie.description,
                     "is_active": category_movie.is_active,
                 },
-            ]
+            ],
+            "meta": {"current_page": 1, "per_page": 2, "total": 2},
         }
 
         url = "/api/categories/"
@@ -79,7 +89,7 @@ class TestCategoryAPI:
         category_repository: DjangoORMCategoryRepository,
     ) -> None:
         """
-        Test the list categories API endpoint.
+        Test the list categories API endpoint ordering by description.
         """
         category_repository.save(category_movie)
         category_repository.save(category_documentary)
@@ -100,7 +110,8 @@ class TestCategoryAPI:
                     "description": category_documentary.description,
                     "is_active": category_documentary.is_active,
                 },
-            ]
+            ],
+            "meta": {"current_page": 1, "per_page": 2, "total": 2},
         }
 
         url = "/api/categories/?order_by=description"
@@ -109,6 +120,31 @@ class TestCategoryAPI:
         assert response.status_code == status.HTTP_200_OK
         assert len(response.data["data"]) == 2
         assert response.data == expected_data
+
+    def test_list_categories_paginated(
+        self,
+        category_documentary,
+        category_movie,
+        category_cartoon,
+        category_repository,
+    ):
+        """
+        Test list categories endpoint paginated
+        """
+        for category in [category_movie, category_cartoon, category_documentary]:
+            category_repository.save(category)
+
+        url = "/api/categories/?current_page=2"
+        response = APIClient().get(url)
+
+        assert response.data["data"]
+        assert response.data["data"][0]["name"] == category_movie.name
+        assert response.data["data"][0]["description"] == category_movie.description
+        assert response.data["data"][0]["is_active"] == category_movie.is_active
+        assert response.data["meta"]
+        assert response.data["meta"]["current_page"] == 2
+        assert response.data["meta"]["per_page"] == 2
+        assert response.data["meta"]["total"] == 3
 
 
 @pytest.mark.django_db

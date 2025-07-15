@@ -1,3 +1,4 @@
+from encodings.punycode import T
 from unicodedata import category
 from unittest import mock
 from unittest.mock import create_autospec
@@ -8,6 +9,7 @@ from src.core.category.application.use_cases.list_categories import (
     ListCategories,
     ListCategoriesRequest,
     ListCategoriesResponse,
+    ListOutputMeta,
 )
 from src.core.category.domain.category import Category
 from src.core.category.infra.in_memory_category_repository import (
@@ -47,15 +49,10 @@ class TestListCategories:
                     description=category.description,
                     is_active=category.is_active,
                 ),
-                CategoryOutput(
-                    id=category2.id,
-                    name=category2.name,
-                    description=category2.description,
-                    is_active=category2.is_active,
-                ),
-            ]
+            ],
+            meta=ListOutputMeta(per_page=2, current_page=1, total=3),
         )
-        assert len(response.data) == 3
+        assert len(response.data) == 2
 
     def test_return_empty_list(self):
         repository = InMemoryCategoryRepository(categories=[])
@@ -63,5 +60,7 @@ class TestListCategories:
         request = ListCategoriesRequest()
 
         response = use_case.execute(request)
-        assert response == ListCategoriesResponse(data=[])
+        assert response == ListCategoriesResponse(
+            data=[], meta=ListOutputMeta(current_page=1, per_page=2, total=0)
+        )
         assert len(response.data) == 0

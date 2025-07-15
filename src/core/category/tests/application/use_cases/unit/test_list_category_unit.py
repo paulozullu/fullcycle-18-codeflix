@@ -59,7 +59,7 @@ class TestListCategory:
         response = use_case.execute(request)
         assert response == ListCategoryResponse(
             data=[],
-            meta=ListOutputMeta(current_page=1, per_page=request.per_page, total=0),
+            meta=ListOutputMeta(),
         )
         assert len(response.data) == 0
         mock_repository.find_all.assert_called_once()

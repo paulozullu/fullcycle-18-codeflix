@@ -14,7 +14,7 @@ class ListRequest(ABC):
 
 @dataclass
 class ListOutputMeta:
-    total: int
+    total: int = 0
     current_page: int = 1
     per_page: int = DEFAULT_PAGINATION_SIZE
 

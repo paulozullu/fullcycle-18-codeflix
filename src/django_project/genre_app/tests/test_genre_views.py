@@ -72,17 +72,22 @@ class TestListAPI:
         assert response.status_code == HTTPStatus.OK
         assert response.data["data"]
 
-        assert response.data["data"][0]["id"] == str(genre_romance.id)
-        assert response.data["data"][0]["name"] == genre_romance.name
-        assert response.data["data"][0]["is_active"] == genre_romance.is_active
+        assert response.data["data"][1]["id"] == str(genre_romance.id)
+        assert response.data["data"][1]["name"] == genre_romance.name
+        assert response.data["data"][1]["is_active"] == genre_romance.is_active
+        assert response.data["data"][1]["categories"]
+        assert str(category_documentary.id) in response.data["data"][1]["categories"]
+        assert str(category_movie.id) in response.data["data"][1]["categories"]
 
-        assert response.data["data"][0]["categories"]
-        assert str(category_documentary.id) in response.data["data"][0]["categories"]
-        assert str(category_movie.id) in response.data["data"][0]["categories"]
-        assert response.data["data"][1]["id"] == str(genre_drama.id)
-        assert response.data["data"][1]["name"] == genre_drama.name
-        assert response.data["data"][1]["is_active"] == genre_drama.is_active
-        assert response.data["data"][1]["categories"] == []
+        assert response.data["data"][0]["id"] == str(genre_drama.id)
+        assert response.data["data"][0]["name"] == genre_drama.name
+        assert response.data["data"][0]["is_active"] == genre_drama.is_active
+        assert response.data["data"][0]["categories"] == []
+
+        assert response.data["meta"]
+        assert response.data["meta"]["total"] == 2
+        assert response.data["meta"]["current_page"] == 1
+        assert response.data["meta"]["per_page"] == 2
 
 
 @pytest.mark.django_db

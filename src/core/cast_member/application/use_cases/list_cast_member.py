@@ -1,5 +1,7 @@
+from curses import meta
 from dataclasses import dataclass
 from uuid import UUID
+from src.core._shared.list_use_case import ListOutputMeta, ListRequest
 from src.core.cast_member.domain.cast_member import Type
 from src.core.cast_member.domain.cast_member_repository import CastMemberRepository
 
@@ -18,17 +20,37 @@ class ListCastMember:
     @dataclass
     class Output:
         data: list[CastMemberOutput]
+        meta: ListOutputMeta
 
-    def execute(self) -> Output:
+    @dataclass
+    class Input(ListRequest): ...
+
+    def execute(self, input: Input) -> Output:
         cast_members = self.repository.find_all()
 
-        mapped_cast_members = [
-            CastMemberOutput(
-                id=cast_member.id,
-                name=cast_member.name,
-                type=cast_member.type,
-            )
-            for cast_member in cast_members
+        mapped_cast_members = sorted(
+            [
+                CastMemberOutput(
+                    id=cast_member.id,
+                    name=cast_member.name,
+                    type=cast_member.type,
+                )
+                for cast_member in cast_members
+            ],
+            key=lambda cast_member: getattr(cast_member, input.order_by),
+        )
+
+        DEFAULT_PAGE_SIZE = 2
+        page_offset = (input.current_page - 1) * DEFAULT_PAGE_SIZE
+        cast_members_page = mapped_cast_members[
+            page_offset : page_offset + DEFAULT_PAGE_SIZE
         ]
 
-        return self.Output(data=mapped_cast_members)
+        return self.Output(
+            data=cast_members_page,
+            meta=ListOutputMeta(
+                total=len(mapped_cast_members),
+                current_page=input.current_page,
+                per_page=input.per_page,
+            ),
+        )

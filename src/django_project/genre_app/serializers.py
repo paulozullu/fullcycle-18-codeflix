@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from src.core._shared.serializer import ListOutputMetaSerializer
+
 
 class GenreOutputSerializer(serializers.Serializer):
     """
@@ -18,6 +20,7 @@ class ListGenreOutputSerializer(serializers.Serializer):
     """
 
     data = GenreOutputSerializer(many=True)
+    meta = ListOutputMetaSerializer()
 
 
 class SetField(serializers.ListField):

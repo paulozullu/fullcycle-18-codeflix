@@ -3,19 +3,22 @@ from rest_framework.test import APIClient
 
 
 @pytest.mark.django_db
-class TestCreateAndEditCastMember:
-    def test_user_can_create_and_edit_cast_member(
+class TestCreateAndRemoveCastMember:
+    def test_user_can_create_and_remove_cast_member(
         self,
     ) -> None:
         """
-        Test the user can create and edit a cast member.
+        Test the user can create and remove a cast member.
         """
         api_client = APIClient()
 
         # Verify list is empty
         list_response = api_client.get("/api/cast_members/")
         assert list_response.status_code == 200
-        assert list_response.data == {"data": []}
+        assert list_response.data == {
+            "data": [],
+            "meta": {"total": 0, "current_page": 1, "per_page": 2},
+        }
 
         # Create a new cast_member
         response = api_client.post(
@@ -39,7 +42,8 @@ class TestCreateAndEditCastMember:
                     "name": "Paulo",
                     "type": "ACTOR",
                 }
-            ]
+            ],
+            "meta": {"total": 1, "current_page": 1, "per_page": 2},
         }
 
         # Remove the cast_member
@@ -50,4 +54,7 @@ class TestCreateAndEditCastMember:
 
         # Verify the cast_member is removed
         list_response = api_client.get("/api/cast_members/")
-        assert list_response.data == {"data": []}
+        assert list_response.data == {
+            "data": [],
+            "meta": {"total": 0, "current_page": 1, "per_page": 2},
+        }

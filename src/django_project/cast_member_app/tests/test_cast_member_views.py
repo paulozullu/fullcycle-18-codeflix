@@ -45,13 +45,18 @@ class TestListAPI:
         assert response.status_code == HTTPStatus.OK
         assert response.data["data"]
 
-        assert response.data["data"][0]["id"] == str(cast_member_actor.id)
-        assert response.data["data"][0]["name"] == cast_member_actor.name
-        assert response.data["data"][0]["type"] == cast_member_actor.type
+        assert response.data["data"][0]["id"] == str(cast_member_director.id)
+        assert response.data["data"][0]["name"] == cast_member_director.name
+        assert response.data["data"][0]["type"] == cast_member_director.type
 
-        assert response.data["data"][1]["id"] == str(cast_member_director.id)
-        assert response.data["data"][1]["name"] == cast_member_director.name
-        assert response.data["data"][1]["type"] == cast_member_director.type
+        assert response.data["data"][1]["id"] == str(cast_member_actor.id)
+        assert response.data["data"][1]["name"] == cast_member_actor.name
+        assert response.data["data"][1]["type"] == cast_member_actor.type
+
+        assert response.data["meta"]
+        assert response.data["meta"]["total"] == 2
+        assert response.data["meta"]["current_page"] == 1
+        assert response.data["meta"]["per_page"] == 2
 
 
 @pytest.mark.django_db

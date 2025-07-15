@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from src.core._shared.serializer import ListOutputMetaSerializer
 from src.core.cast_member.domain.cast_member import Type
 
 
@@ -34,6 +35,7 @@ class ListCastMemberOutputSerializer(serializers.Serializer):
     """
 
     data = CastMemberOutputSerializer(many=True)
+    meta = ListOutputMetaSerializer()
 
 
 class CreateCastMemberInputSerializer(serializers.Serializer):

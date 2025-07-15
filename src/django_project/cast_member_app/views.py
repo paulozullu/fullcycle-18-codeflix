@@ -36,8 +36,11 @@ class CastMemberViewSet(viewsets.ViewSet):
         """
         List all cast members.
         """
+        order_by = request.query_params.get("order_by", "name")
+        current_page = int(request.query_params.get("current_page", 1))
+        input = ListCastMember.Input(order_by=order_by, current_page=current_page)
         use_case = ListCastMember(repository=DjangoORMCastMemberRepository())
-        output: ListCastMember.Output = use_case.execute()
+        output: ListCastMember.Output = use_case.execute(input)
         serializer = ListCastMemberOutputSerializer(output)
         return Response(status=HTTPStatus.OK, data=serializer.data)
 

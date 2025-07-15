@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from src.core._shared.serializer import ListOutputMetaSerializer
+
 
 class CategoryResponseSerializer(serializers.Serializer):
     """
@@ -11,11 +13,6 @@ class CategoryResponseSerializer(serializers.Serializer):
     description = serializers.CharField()
     is_active = serializers.BooleanField()
 
-
-class ListOutputMetaSerializer(serializers.Serializer):
-    current_page = serializers.IntegerField()
-    per_page = serializers.IntegerField()
-    total = serializers.IntegerField()
 
 class ListCategoriesResponseSerializer(serializers.Serializer):
     """

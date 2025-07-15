@@ -1,6 +1,4 @@
-from functools import partial
-from uuid import UUID, uuid4
-from django.shortcuts import render
+from uuid import UUID
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.request import Request

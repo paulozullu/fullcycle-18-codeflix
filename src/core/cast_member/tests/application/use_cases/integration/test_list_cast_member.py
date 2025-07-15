@@ -1,3 +1,4 @@
+from src.core._shared.list_use_case import ListOutputMeta
 from src.core.cast_member.application.use_cases.list_cast_member import (
     CastMemberOutput,
     ListCastMember,
@@ -15,7 +16,8 @@ class TestListCastMember:
         cast_member_repository.save(cast_member)
         use_case = ListCastMember(repository=cast_member_repository)
 
-        output = use_case.execute()
+        input = ListCastMember.Input()
+        output = use_case.execute(input)
 
         assert len(output.data) == 1
         assert output == ListCastMember.Output(
@@ -25,13 +27,27 @@ class TestListCastMember:
                     name=cast_member.name,
                     type=cast_member.type,
                 )
-            ]
+            ],
+            meta=ListOutputMeta(
+                total=1,
+                current_page=1,
+                per_page=2,
+            ),
         )
 
     def test_list_cast_member_when_do_not_exist_genre(self):
         cast_member_repository = InMemoryCastMemberRepository()
         use_case = ListCastMember(cast_member_repository)
-        output = use_case.execute()
+        input = ListCastMember.Input()
+        output = use_case.execute(input)
 
         assert len(output.data) == 0
-        assert output == ListCastMember.Output(data=[])
+        assert output == ListCastMember.Output(
+            data=[],
+            meta=ListOutputMeta(
+                total=0,
+                current_page=1,
+                per_page=2,
+            ),
+        )
+        

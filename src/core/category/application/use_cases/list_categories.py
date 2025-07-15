@@ -1,13 +1,12 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from uuid import UUID
 
+from src.core._shared.list_use_case import ListOutputMeta, ListRequest, ListResponse
 from src.core.category.domain.category_repository import CategoryRepository
 
 
 @dataclass
-class ListCategoriesRequest:
-    order_by: str = "name"
-    current_page: int = 1
+class ListCategoriesRequest(ListRequest): ...
 
 
 @dataclass
@@ -19,16 +18,8 @@ class CategoryOutput:
 
 
 @dataclass
-class ListOutputMeta:
-    current_page: int
-    per_page: int
-    total: int
-
-
-@dataclass
-class ListCategoriesResponse:
+class ListCategoriesResponse(ListResponse):
     data: list[CategoryOutput]
-    meta: ListOutputMeta = field(default_factory=ListOutputMeta)
 
 
 class ListCategories:
@@ -52,7 +43,9 @@ class ListCategories:
 
         DEFAULT_PAGE_SIZE = 2
         page_offset = (request.current_page - 1) * DEFAULT_PAGE_SIZE
-        categories_page = sorted_categories[page_offset:page_offset + DEFAULT_PAGE_SIZE]
+        categories_page = sorted_categories[
+            page_offset : page_offset + DEFAULT_PAGE_SIZE
+        ]
 
         return ListCategoriesResponse(
             data=categories_page,

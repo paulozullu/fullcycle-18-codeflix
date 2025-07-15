@@ -22,8 +22,8 @@ from src.core.category.application.use_cases.get_category import (
     GetCategory,
     GetCategoryRequest,
 )
-from src.core.category.application.use_cases.list_categories import (
-    ListCategories,
+from src.core.category.application.use_cases.list_category import (
+    ListCategory,
     ListCategoriesRequest,
 )
 from src.django_project.category_app.repository import DjangoORMCategoryRepository
@@ -50,7 +50,7 @@ class CategoryViewSet(viewsets.ViewSet):
         order_by = request.query_params.get("order_by", "name")
         current_page = int(request.query_params.get("current_page", 1))
         input = ListCategoriesRequest(order_by=order_by, current_page=current_page)
-        use_case = ListCategories(repository=DjangoORMCategoryRepository())
+        use_case = ListCategory(repository=DjangoORMCategoryRepository())
         output = use_case.execute(input)
         serializer = ListCategoriesResponseSerializer(instance=output)
         return Response(status=HTTP_200_OK, data=serializer.data)

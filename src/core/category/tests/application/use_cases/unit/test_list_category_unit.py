@@ -1,23 +1,17 @@
-from encodings.punycode import T
-from unicodedata import category
-from unittest import mock
 from unittest.mock import create_autospec
 
 from src.core.category.domain.category_repository import CategoryRepository
-from src.core.category.application.use_cases.list_categories import (
+from src.core.category.application.use_cases.list_category import (
     CategoryOutput,
-    ListCategories,
+    ListCategory,
     ListCategoriesRequest,
-    ListCategoriesResponse,
+    ListCategoryResponse,
     ListOutputMeta,
 )
 from src.core.category.domain.category import Category
-from src.core.category.infra.in_memory_category_repository import (
-    InMemoryCategoryRepository,
-)
 
 
-class TestListCategories:
+class TestListCategory:
     def test_return_created_categories(self):
         category = Category(name="Filme", description="Filmes em geral", is_active=True)
         category2 = Category(
@@ -26,16 +20,18 @@ class TestListCategories:
         category3 = Category(
             name="Documentário", description="Documentários em geral", is_active=True
         )
-        repository = InMemoryCategoryRepository()
-        repository.save(category)
-        repository.save(category2)
-        repository.save(category3)
-        use_case = ListCategories(repository=repository)
+        mock_repository = create_autospec(CategoryRepository)
+        mock_repository.find_all.return_value = [
+            category,
+            category2,
+            category3,
+        ]
+
+        use_case = ListCategory(repository=mock_repository)
         request = ListCategoriesRequest()
 
         response = use_case.execute(request)
-
-        assert response == ListCategoriesResponse(
+        assert response == ListCategoryResponse(
             data=[
                 CategoryOutput(
                     id=category3.id,
@@ -50,17 +46,20 @@ class TestListCategories:
                     is_active=category.is_active,
                 ),
             ],
-            meta=ListOutputMeta(per_page=request.per_page, current_page=1, total=3),
+            meta=ListOutputMeta(current_page=1, per_page=request.per_page, total=3),
         )
         assert len(response.data) == 2
+        mock_repository.find_all.assert_called_once()
 
     def test_return_empty_list(self):
-        repository = InMemoryCategoryRepository(categories=[])
-        use_case = ListCategories(repository=repository)
+        mock_repository = create_autospec(CategoryRepository)
+        use_case = ListCategory(repository=mock_repository)
         request = ListCategoriesRequest()
 
         response = use_case.execute(request)
-        assert response == ListCategoriesResponse(
-            data=[], meta=ListOutputMeta(current_page=1, per_page=request.per_page, total=0)
+        assert response == ListCategoryResponse(
+            data=[],
+            meta=ListOutputMeta(current_page=1, per_page=request.per_page, total=0),
         )
         assert len(response.data) == 0
+        mock_repository.find_all.assert_called_once()

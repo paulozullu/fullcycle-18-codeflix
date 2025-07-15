@@ -19,15 +19,15 @@ class CategoryOutput:
 
 
 @dataclass
-class ListCategoriesResponse(ListResponse):
+class ListCategoryResponse(ListResponse):
     data: list[CategoryOutput]
 
 
-class ListCategories:
+class ListCategory:
     def __init__(self, repository: CategoryRepository):
         self.repository = repository
 
-    def execute(self, request: ListCategoriesRequest) -> ListCategoriesResponse:
+    def execute(self, request: ListCategoriesRequest) -> ListCategoryResponse:
         categories = self.repository.find_all()
         sorted_categories = sorted(
             [
@@ -47,7 +47,7 @@ class ListCategories:
             page_offset : page_offset + DEFAULT_PAGINATION_SIZE
         ]
 
-        return ListCategoriesResponse(
+        return ListCategoryResponse(
             data=categories_page,
             meta=ListOutputMeta(
                 current_page=request.current_page,

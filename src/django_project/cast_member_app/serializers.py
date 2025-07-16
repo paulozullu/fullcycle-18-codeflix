@@ -1,6 +1,9 @@
 from rest_framework import serializers
 
-from src.core._shared.serializer import ListOutputMetaSerializer
+from src.core._shared.serializer import (
+    BaseEntityOutputSerializer,
+    BaseListOutputSerializer,
+)
 from src.core.cast_member.domain.cast_member import Type
 
 
@@ -19,7 +22,7 @@ class CastMemberTypeField(serializers.ChoiceField):
         return str(super().to_representation(value))
 
 
-class CastMemberOutputSerializer(serializers.Serializer):
+class CastMemberOutputSerializer(BaseEntityOutputSerializer):
     """
     Serializer for the CastMember response.
     """
@@ -29,13 +32,12 @@ class CastMemberOutputSerializer(serializers.Serializer):
     type = CastMemberTypeField()
 
 
-class ListCastMemberOutputSerializer(serializers.Serializer):
+class ListCastMemberOutputSerializer(BaseListOutputSerializer):
     """
     Serializer for the List CastMembers response.
     """
 
     data = CastMemberOutputSerializer(many=True)
-    meta = ListOutputMetaSerializer()
 
 
 class CreateCastMemberInputSerializer(serializers.Serializer):

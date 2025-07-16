@@ -1,9 +1,9 @@
 from rest_framework import serializers
 
-from src.core._shared.serializer import ListOutputMetaSerializer
+from src.core._shared.serializer import BaseEntityOutputSerializer, BaseListOutputSerializer
 
 
-class GenreOutputSerializer(serializers.Serializer):
+class GenreOutputSerializer(BaseEntityOutputSerializer):
     """
     Serializer for the Genre response.
     """
@@ -14,13 +14,12 @@ class GenreOutputSerializer(serializers.Serializer):
     categories = serializers.ListField(child=serializers.UUIDField())
 
 
-class ListGenreOutputSerializer(serializers.Serializer):
+class ListGenreOutputSerializer(BaseListOutputSerializer):
     """
     Serializer for the List Genres response.
     """
 
     data = GenreOutputSerializer(many=True)
-    meta = ListOutputMetaSerializer()
 
 
 class SetField(serializers.ListField):

@@ -1,9 +1,12 @@
 from rest_framework import serializers
 
-from src.core._shared.serializer import ListOutputMetaSerializer
+from src.core._shared.serializer import (
+    BaseEntityOutputSerializer,
+    BaseListOutputSerializer,
+)
 
 
-class CategoryOutputSerializer(serializers.Serializer):
+class CategoryOutputSerializer(BaseEntityOutputSerializer):
     """
     Serializer for the Category response.
     """
@@ -14,13 +17,12 @@ class CategoryOutputSerializer(serializers.Serializer):
     is_active = serializers.BooleanField()
 
 
-class ListCategoriesOutputSerializer(serializers.Serializer):
+class ListCategoriesOutputSerializer(BaseListOutputSerializer):
     """
     Serializer for the List Categories response.
     """
 
     data = CategoryOutputSerializer(many=True)
-    meta = ListOutputMetaSerializer()
 
 
 class RetrieveCategoryOutputSerializer(serializers.Serializer):

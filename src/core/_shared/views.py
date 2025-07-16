@@ -4,7 +4,7 @@ from rest_framework.request import Request
 from http import HTTPStatus
 
 
-class BaseListViewSet(viewsets.ViewSet):
+class BaseViewSet(viewsets.ViewSet):
     list_use_case = None
     list_serializer_class = None
     repository = None

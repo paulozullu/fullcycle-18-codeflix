@@ -8,7 +8,7 @@ from rest_framework.status import (
     HTTP_204_NO_CONTENT,
 )
 
-from src.core._shared.views import BaseListViewSet
+from src.core._shared.views import BaseViewSet
 from src.core.category.application.use_cases.create_category import (
     CreateCategory,
 )
@@ -39,7 +39,7 @@ from src.django_project.category_app.serializers import (
     UpdateCategoryInputSerializer,
 )
 
-class CategoryViewSet(BaseListViewSet):
+class CategoryViewSet(BaseViewSet):
     list_use_case = ListCategory
     list_serializer_class = ListCategoriesOutputSerializer
     repository = DjangoORMCategoryRepository

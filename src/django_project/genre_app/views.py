@@ -9,6 +9,7 @@ from rest_framework.status import (
     HTTP_201_CREATED,
 )
 
+from src.core._shared.views import BaseViewSet
 from src.core.genre.application.exceptions import (
     GenreNotFound,
     InvalidGenre,
@@ -31,16 +32,10 @@ from src.django_project.genre_app.serializers import (
 )
 
 
-class GenreViewSet(viewsets.ViewSet):
-    def list(self, request: Request) -> Response:
-        """
-        List all genres.
-        """
-        input = ListGenre.Input()
-        use_case = ListGenre(repository=DjangoORMGenreRepository())
-        output: ListGenre.Output = use_case.execute(input)
-        serializer = ListGenreOutputSerializer(output)
-        return Response(status=HTTPStatus.OK, data=serializer.data)
+class GenreViewSet(BaseViewSet):
+    list_use_case = ListGenre
+    list_serializer_class = ListGenreOutputSerializer
+    repository = DjangoORMGenreRepository
 
     def create(self, request: Request) -> Response:
         """

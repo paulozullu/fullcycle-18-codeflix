@@ -7,6 +7,7 @@ from rest_framework.status import (
     HTTP_201_CREATED,
 )
 
+from src.core._shared.views import BaseViewSet
 from src.core.cast_member.application.use_cases.create_cast_member import (
     CreateCastMember,
 )
@@ -31,18 +32,10 @@ from src.django_project.cast_member_app.serializers import (
 )
 
 
-class CastMemberViewSet(viewsets.ViewSet):
-    def list(self, request: Request) -> Response:
-        """
-        List all cast members.
-        """
-        order_by = request.query_params.get("order_by", "name")
-        current_page = int(request.query_params.get("current_page", 1))
-        input = ListCastMember.Input(order_by=order_by, current_page=current_page)
-        use_case = ListCastMember(repository=DjangoORMCastMemberRepository())
-        output: ListCastMember.Output = use_case.execute(input)
-        serializer = ListCastMemberOutputSerializer(output)
-        return Response(status=HTTPStatus.OK, data=serializer.data)
+class CastMemberViewSet(BaseViewSet):
+    list_use_case = ListCastMember
+    list_serializer_class = ListCastMemberOutputSerializer
+    repository = DjangoORMCastMemberRepository
 
     def create(self, request: Request) -> Response:
         """
